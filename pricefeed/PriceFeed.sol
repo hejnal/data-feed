@@ -1,9 +1,8 @@
-pragma solidity ^0.4.8;
+pragma solidity ^0.4.11;
 
 import "github.com/melonproject/protocol/contracts/datafeeds/PriceFeedProtocol.sol";
 import "github.com/melonproject/protocol/contracts/assets/Asset.sol";
 import "github.com/melonproject/protocol/contracts/dependencies/ERC20.sol";
-import "github.com/melonproject/protocol/contracts/dependencies/SafeMath.sol";
 import "github.com/melonproject/protocol/contracts/dependencies/Owned.sol";
 import "github.com/oraclize/ethereum-api/oraclizeAPI.sol";
 import "github.com/Arachnid/solidity-stringutils/strings.sol";
@@ -228,7 +227,7 @@ contract DateTime {
 
                 return timestamp;
         }
-        
+
         function toMonth(string _month) constant returns(uint8) {
             if (sha3("Jan") == sha3(_month)) {
                 return 1;
@@ -267,7 +266,7 @@ contract DateTime {
                 return 12;
             }
         }
-        
+
         function parseInt(string _a, uint _b) internal returns (uint) {
             bytes memory bresult = bytes(_a);
             uint mint = 0;
@@ -285,7 +284,7 @@ contract DateTime {
             if (_b > 0) mint *= 10**_b;
             return mint;
         }
-        
+
         // Parse Date in IMF-fixdate format
         // Tue, 04 Apr 2017 11:12:58 GMT
         function parseDate(string _date) constant returns(uint) {
@@ -626,7 +625,7 @@ contract ECVerify {
 
 }
 
-contract PriceFeed is usingOraclize, ECVerify, b64, JSON_Decoder, PriceFeedProtocol, SafeMath, Owned {
+contract CryptoCompare is usingOraclize, ECVerify, b64, JSON_Decoder, PriceFeedProtocol, Owned {
     using strings for *;
     DateTime time = DateTime(0xe586cc86e5dfcf6e0578ea0dfcc0fcbe98ca988b);
 
@@ -639,18 +638,35 @@ contract PriceFeed is usingOraclize, ECVerify, b64, JSON_Decoder, PriceFeedProto
 
     struct AssetInfo {
         address assetAddress;
-        string assetTicker;
+        string assetSymbol;
     }
 
     // FIELDS
 
     // Constant fields
     // Token addresses on Kovan
-    address public constant ETHER_TOKEN = 0x7506c7BfED179254265d443856eF9bda19221cD7;
-    address public constant MELON_TOKEN = 0x4dffea52b0b4b48c71385ae25de41ce6ad0dd5a7;
-    address public constant BITCOIN_TOKEN = 0x9E4C56a633DD64a2662bdfA69dE4FDE33Ce01bdd;
-    address public constant REP_TOKEN = 0xF61b8003637E5D5dbB9ca8d799AB54E5082CbdBc;
-    address public constant EURO_TOKEN = 0xC151b622fDeD233111155Ec273BFAf2882f13703;
+    address public constant ARAGON_TOKEN = 0xD99aED09A65ee8377A2fFad8ED5407785c530869;
+    /*address public constant AVENTUS_TOKEN = 0x20A0E0dECE9FB6C690CdB439db2B385d271BdA3f;*/
+    address public constant BANCOR_TOKEN = 0x764ae227ad6a6e143546772169265d76aA9337c6;
+    address public constant BA_TOKEN = 0xFEE1D0Dc0b5b6F2F20D8e9f7E95e9E367E4a61A7;
+    address public constant BITCOIN_TOKEN = 0xF53E3B6c12f8c66324A64F31277260C06D869732;
+    address public constant DGD_TOKEN = 0x3b7c7C457D3aAe04a4631E4888AeEEDd08B24e41;
+    /*address public constant DGX_TOKEN = 0x804b7F797eEe4D51Fef29b3Ef7E525A3848A0c0F;*/
+    address public constant DOGECOIN_TOKEN = 0xC37cdFb70BD68f6FCF2aB0a97E1D6a12eaA9215f;
+    address public constant ETHER_CLASSIC_TOKEN = 0x334559E91238f466C95Bb8241555f6AD27f5978B;
+    address public constant ETHER_TOKEN = 0x1a825E9bF3BdC8ef8B975F97c78b5208a947d0EC;
+    address public constant EURO_TOKEN = 0xCAAC95AB4D30EE8D6162e55EB3430134FEc5aF50;
+    address public constant GNOSIS_TOKEN = 0xC73D78870bA5a3eAddC2BE371Af09B2c429CB2CA;
+    address public constant GOLEM_TOKEN = 0x08C24283F0b6C07ff9793a1B8534A49B32C07e73;
+    address public constant ICONOMI_TOKEN = 0xc87BAD39aaDB70257E2417Bd8f4983361599394D;
+    address public constant LITECOIN_TOKEN = 0xF051264ab9046fd73cBd00df5E732d2cA78ee704;
+    address public constant MELON_TOKEN = 0x2a20ff70596e431ab26C2365acab1b988DA8eCCF;
+    /*address public constant MAKERDAO_TOKEN = 0xe1b25BCaE898ab228A13EAC49EBBA8D3df9add70;*/
+    address public constant REP_TOKEN = 0x64aF87A36a407732320c4dc1852dEBC60cd81c5E;
+    address public constant RIPPLE_TOKEN = 0x3b43249De8Eee169Eea7226a48699FcBA8DF3686;
+    address public constant SINGULARDTV_TOKEN = 0x4C4e2b285e446fb1974dcC3a665CAba7C189A96f;
+    address public constant STATUS_NETWORK_TOKEN = 0x64C4406C58C512f326d83065a72F12884105520b;
+    /*address public constant 0x_TOKEN = 0xbb0449e9b66e2E1438522645caE6Cf9CD8595793;*/
 
     // Fields that are only changed in constructor
     /// Note: By definition the price of the quote asset against itself (quote asset) is always equals one
@@ -658,7 +674,7 @@ contract PriceFeed is usingOraclize, ECVerify, b64, JSON_Decoder, PriceFeedProto
     // Fields that can be changed by functions
     uint frequency = 30; // Frequency of updates in seconds
     uint validity = 600; // Time in seconds data is considered valid
-    uint gasLimit = 500000;
+    uint gasLimit = 5000000;
     bytes ds_pubkey;
 
     AssetInfo[] public assets;
@@ -671,7 +687,7 @@ contract PriceFeed is usingOraclize, ECVerify, b64, JSON_Decoder, PriceFeedProto
     // ORACLIZE DATA-STRUCTURES
 
     bool continuousDelivery;
-    string oraclizeQuery;
+    string public oraclizeQuery;
 
     // MODIFIERS
 
@@ -696,7 +712,12 @@ contract PriceFeed is usingOraclize, ECVerify, b64, JSON_Decoder, PriceFeedProto
     }
 
     modifier only_oraclize {
-        if (msg.sender != oraclize_cbAddress()) throw;
+        assert(msg.sender == oraclize_cbAddress());
+        _;
+    }
+
+    modifier only_owner {
+        assert(msg.sender == owner);
         _;
     }
 
@@ -705,7 +726,7 @@ contract PriceFeed is usingOraclize, ECVerify, b64, JSON_Decoder, PriceFeedProto
     function getQuoteAsset() constant returns (address) { return quoteAsset; }
     function getFrequency() constant returns (uint) { return frequency; }
     function getValidity() constant returns (uint) { return validity; }
-    
+
     // Pre: Asset has been initialised
     // Post: Returns boolean if data is valid
     function getStatus(address ofAsset)
@@ -737,7 +758,7 @@ contract PriceFeed is usingOraclize, ECVerify, b64, JSON_Decoder, PriceFeedProto
     {
         return (data[ofAsset].timestamp, data[ofAsset].price);
     }
-    
+
     function getPublicKey()
         constant
         returns (bytes)
@@ -745,28 +766,47 @@ contract PriceFeed is usingOraclize, ECVerify, b64, JSON_Decoder, PriceFeedProto
         return ds_pubkey;
     }
 
-    function PriceFeed() payable {
+    function CryptoCompare() payable {
         oraclize_setProof(240);
         quoteAsset = ETHER_TOKEN; // Is the quote asset of a portfolio against which all other assets are priced against
         /* Note:
          *  Sample response for below query {"MLN":1.36,"BTC":0.04695,"EUR":47.48,"REP":4.22}
-         *  Prices shold be quoted in quoteAsset
-         *  1) MLN/ETH -> ETH/MLN
-         *  2) BTC/ETH -> ETH/BTC
-         *  3) EUR/ETH -> ETH/EUR
-         *  4) REP/ETH -> ETH/REP
+         *  Prices shold be quoted in quoteAsset, i.e. they need to be inverted e.g. MLN/ETH -> ETH/MLN
          */
-        //setQuery("https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=MLN,BTC,EUR,REP&sign=true");
+        setQuery("https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=ANT,BNT,BAT,BTC,DGD,DOGE,ETC,ETH,EUR,GNO,GNT,ICN,LTC,MLN,REP,XRP,SNGLS,SNT&sign=true");
         ds_pubkey = hex"a0f4f688350018ad1b9785991c0bde5f704b005dc79972b114dbed4a615a983710bfc647ebe5a320daa28771dce6a2d104f5efa2e4a85ba3760b76d46f8571ca";
-        //enableContinuousDelivery();
-        //oraclize_query('URL', oraclizeQuery, 500000);
+
+        addAsset('ANT', ARAGON_TOKEN);
+        //addAsset('AVT', AVENTUS_TOKEN);
+        addAsset('BNT', BANCOR_TOKEN);
+        addAsset('BAT', BA_TOKEN);
+        addAsset('BTC', BITCOIN_TOKEN);
+        addAsset('DGD', DGD_TOKEN);
+        //addAsset('DGX', DGX_TOKEN);
+        addAsset('DOGE', DOGECOIN_TOKEN);
+        addAsset('ETC', ETHER_CLASSIC_TOKEN);
+        addAsset('ETH', ETHER_TOKEN);
+        addAsset('EUR', EURO_TOKEN);
+        addAsset('GNO', GNOSIS_TOKEN);
+        addAsset('GNT', GOLEM_TOKEN);
+        addAsset('ICN', ICONOMI_TOKEN);
+        addAsset('LTC', LITECOIN_TOKEN);
+        addAsset('MLN', MELON_TOKEN);
+        //addAsset('MKR', MAKERDAO_TOKEN);
+        addAsset('REP', REP_TOKEN);
+        addAsset('XRP', RIPPLE_TOKEN);
+        addAsset('SNGLS', SINGULARDTV_TOKEN);
+        addAsset('SNT', STATUS_NETWORK_TOKEN);
+        //addAsset('ZRX', 0x_TOKEN);
+
+        enableContinuousDelivery();
     }
 
     function () payable {}
-    
-    /* The native proof is considered valid if the HTTP Date Header has a timestamp 
+
+    /* The native proof is considered valid if the HTTP Date Header has a timestamp
     *  subsequent to the timestamp of execution of the last Oraclize callback,
-    *  which is the time when the price data was updated. 
+    *  which is the time when the price data was updated.
     *  This check prevents Oraclize from doing replay attacks on the signed data.
     */
     function isFresh(string _dateHeader) internal constant returns(bool) {
@@ -830,7 +870,7 @@ contract PriceFeed is usingOraclize, ECVerify, b64, JSON_Decoder, PriceFeedProto
         if ((proof.length > 0) && (nativeProof_verify(result, proof, ds_pubkey))) {
             for (uint i=0; i < assets.length; i++) {
                 AssetInfo thisAsset = assets[i];
-                setPriceOf(result, thisAsset.assetTicker, thisAsset.assetAddress);
+                setPriceOf(result, thisAsset.assetSymbol, thisAsset.assetAddress);
             }
         }
 
@@ -838,7 +878,7 @@ contract PriceFeed is usingOraclize, ECVerify, b64, JSON_Decoder, PriceFeedProto
            updatePriceOraclize();
         }
     }
-    
+
     function setPriceOf(string result, string ticker, address assetAddress) internal {
         Asset currentAsset = Asset(assetAddress);
         Asset baseAsset = Asset(quoteAsset);
@@ -890,10 +930,10 @@ contract PriceFeed is usingOraclize, ECVerify, b64, JSON_Decoder, PriceFeedProto
         uint length = assets.length;
         for (uint i = 0; i < length; i++) {
             if (assets[i].assetAddress == _assetRemoved) {
-                break;   
+                break;
             }
         }
-        
+
         assets[i] = assets[assets.length - 1];
         assets.length--;
     }
