@@ -773,7 +773,7 @@ contract CryptoCompare is usingOraclize, ECVerify, b64, JSON_Decoder, PriceFeedP
          *  Sample response for below query {"MLN":1.36,"BTC":0.04695,"EUR":47.48,"REP":4.22}
          *  Prices shold be quoted in quoteAsset, i.e. they need to be inverted e.g. MLN/ETH -> ETH/MLN
          */
-        setQuery("https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=ANT,BNT,BAT,BTC,DGD,DOGE,ETC,ETH,EUR,GNO,GNT,ICN,LTC,MLN,REP,XRP,SNGLS,SNT&sign=true");
+        setQuery("https://min-api.cryptocompare.com/data/price?fsym=MLN&tsyms=ANT,BNT,BAT,BTC,DGD,DOGE,ETC,ETH,EUR,GNO,GNT,ICN,LTC,MLN,REP,XRP,SNGLS,SNT&sign=true");
         ds_pubkey = hex"a0f4f688350018ad1b9785991c0bde5f704b005dc79972b114dbed4a615a983710bfc647ebe5a320daa28771dce6a2d104f5efa2e4a85ba3760b76d46f8571ca";
 
         addAsset('ANT', ARAGON_TOKEN);
